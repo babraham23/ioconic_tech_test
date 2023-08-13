@@ -7,9 +7,10 @@ type Props = {
     onChangeText?: any;
     placeholder?: string;
     onFilterPress?: any;
+    style?: any;
 };
 
-const AnimatedSearchInput = ({ scrollYValue, onChangeText, placeholder, onFilterPress }: Props) => {
+const AnimatedSearchInput = ({ scrollYValue, onChangeText, placeholder, onFilterPress, style }: Props) => {
     let event = scrollYValue;
 
     const clampedScroll = Animated.diffClamp(
@@ -41,6 +42,7 @@ const AnimatedSearchInput = ({ scrollYValue, onChangeText, placeholder, onFilter
         <Animated.View
             style={[
                 styles.container,
+                style,
                 {
                     transform: [
                         {
@@ -60,7 +62,7 @@ const styles = StyleSheet.create({
     container: {
         position: 'absolute',
         top: Platform.OS === 'ios' ? 30 : 30,
-        zIndex: 80,
+        zIndex: 5,
         flexDirection: 'row',
         paddingHorizontal: 10,
     },

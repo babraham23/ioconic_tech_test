@@ -41,11 +41,6 @@ const CreateQuoteForm = ({ onSave }: QuoteFormProps) => {
                 ))}
             </View>
             <FAB style={styles.fab} onPress={saveQuote} />
-
-            {/* <TouchableOpacity onPress={saveQuote} style={styles.saveButton}>
-                <Text style={styles.saveButtonText}>Save</Text>
-            </TouchableOpacity> */}
-
         </View>
     );
 };
@@ -54,7 +49,6 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFF',
         borderRadius: 8,
-        elevation: 4,
         margin: 16,
     },
     title: {
@@ -78,16 +72,6 @@ const styles = StyleSheet.create({
     },
     starButton: {
         paddingHorizontal: 4,
-    },
-    saveButton: {
-        backgroundColor: '#007AFF',
-        borderRadius: 4,
-        padding: 10,
-        alignItems: 'center',
-    },
-    saveButtonText: {
-        color: '#FFF',
-        fontWeight: 'bold',
     },
     fab: {
         position: 'absolute',
