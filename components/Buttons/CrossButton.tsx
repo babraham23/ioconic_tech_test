@@ -1,11 +1,11 @@
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
-import { Entypo } from '@expo/vector-icons';
+import { EvilIcons } from '@expo/vector-icons';
 
 const CrossButton = ({ onPress, style }: any) => {
     return (
         <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={[style, styles.container]}>
-            <Entypo name="cross" size={18} color="black" />
+            <EvilIcons name="close" size={18} color="black" />
         </TouchableOpacity>
     );
 };

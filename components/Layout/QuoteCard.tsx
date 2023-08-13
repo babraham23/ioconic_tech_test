@@ -3,15 +3,39 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import LikeButton from '../Buttons/LikeButton';
 import CrossButton from '../Buttons/CrossButton';
+import { Entypo } from '@expo/vector-icons';
 
 type Props = {
     quote?: string;
     onPress?: () => void;
     liked?: boolean;
     onCrossPress?: () => void;
+    movie?: string;
+    rating?: any;
+    timestamp?: any;
 };
 
-const QuoteCard = ({ quote, onPress, liked, onCrossPress }: Props) => {
+const QuoteCard = ({ quote, onPress, liked, onCrossPress, movie, rating, timestamp }: Props) => {
+    const renderStars = () => {
+        const starElements = [];
+        const maxRating = 5;
+
+        for (let i = 1; i <= maxRating; i++) {
+            const starColor = rating && i <= rating ? '#FFD700' : '#888';
+            starElements.push(<Entypo key={i} name="star" size={20} color={starColor} style={{ marginRight: 5 }} />);
+        }
+
+        return starElements;
+    };
+
+    const formatTimeFromTimestamp = (timestamp: string): string => {
+        const date = new Date(timestamp);
+        const hours = date.getHours();
+        const minutes = date.getMinutes();      
+        const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes.toString();
+        return `${hours}:${formattedMinutes}`;
+      }
+
     return (
         <View style={styles.card}>
             <View style={styles.header}>
@@ -20,6 +44,13 @@ const QuoteCard = ({ quote, onPress, liked, onCrossPress }: Props) => {
             </View>
             <View style={styles.quoteWrapper}>
                 <Text style={styles.quote}>{quote}</Text>
+            </View>
+            <View style={styles.movieWrapper}>
+                <Text style={styles.movie}>- {movie}</Text>
+            </View>
+            <View style={styles.footer} >
+                <View style={styles.ratingContainer}>{renderStars()}</View>
+                <Text style={styles.timestamp}>{formatTimeFromTimestamp(timestamp)}</Text>
             </View>
         </View>
     );
@@ -41,6 +72,10 @@ const styles = StyleSheet.create({
         borderColor: '#e8e8e8',
     },
     quote: {
+        fontSize: 20,
+        fontWeight: '600'
+    },
+    movie: {
         fontSize: 16,
     },
     likeButton: {
@@ -54,6 +89,27 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingBottom: 20,
     },
+    movieWrapper: {
+        paddingHorizontal: 20,
+    },
+    ratingContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 5,
+        paddingTop: 10,
+    },
+    footer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingBottom: 10,
+    },
+    timestamp: {
+        fontSize: 12,
+        color: '#888',
+        paddingTop: 13,
+    }
 });
 
 export default QuoteCard;

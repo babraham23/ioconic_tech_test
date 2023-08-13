@@ -8,16 +8,18 @@ type Props = {
     editable?: boolean;
     value?: string;
     scrollEnabled?: boolean;
+    numberOfLines?: number;
+    height?: number;
 };
 
-const TextAreaInput = ({ style, placeholder, onChangeText, editable, value, scrollEnabled }: Props) => {
+const TextAreaInput = ({ style, placeholder, onChangeText, editable, value, height }: Props) => {
     return (
         <View style={style}>
             <View style={[styles.inputWrapper]}>
                 <TextInput
                     placeholderTextColor={'#8E8E8E'}
                     placeholder={placeholder}
-                    style={[styles.textAreaInput]}
+                    style={[styles.textAreaInput, { height }]}
                     underlineColorAndroid="transparent"
                     autoCapitalize={'none'}
                     multiline={true}
@@ -25,8 +27,9 @@ const TextAreaInput = ({ style, placeholder, onChangeText, editable, value, scro
                     onChangeText={onChangeText}
                     editable={editable}
                     value={value}
-                    numberOfLines={4}
-                    scrollEnabled={scrollEnabled}
+                    numberOfLines={2}
+                    scrollEnabled={false}
+                    maxLength={100}
                 />
             </View>
         </View>
@@ -36,6 +39,10 @@ const TextAreaInput = ({ style, placeholder, onChangeText, editable, value, scro
 const styles = StyleSheet.create({
     inputWrapper: {
         marginBottom: Platform.OS === 'ios' ? 30 : 0,
+        borderWidth: 1,
+        borderRadius: 4,
+        borderColor: '#888',
+        padding: 8,
     },
     textAreaInput: {
         fontSize: 16,
