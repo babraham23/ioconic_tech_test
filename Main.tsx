@@ -7,6 +7,7 @@ import AnimatedSearchInput from './components/Inputs/AnimatedSearchInput';
 import FAB from './components/Buttons/FAB';
 import CreateQuoteForm from './components/Forms/CreateQuoteForm';
 import { set } from 'mongoose';
+import FilterForm from './components/Forms/FilterForm';
 
 interface Quote {
     text: string;
@@ -23,6 +24,13 @@ const Main: React.FC = () => {
     const bottomSheetRef = React.useRef<BottomSheetModal>(null);
     const snapPoints = React.useMemo(() => ['80%'], []);
     const [sheetContent, setSheetContent] = useState<string>('create');
+    const [filterOptions, setFilterOptions] = useState({
+        liked: false,
+        highestRated: false,
+        lowestRated: false,
+        newest: false,
+        oldest: false,
+    });
 
     const renderBackdrop = React.useCallback(
         (props: any) => <BottomSheetBackdrop {...props} pressBehavior={'close'} disappearsOnIndex={-1} appearsOnIndex={0} opacity={0.75} />,
@@ -122,8 +130,10 @@ const Main: React.FC = () => {
         return 0;
     });
 
-    const filterBy = (filter: string) => {
+    const filterBy = (filter: any) => {
         // liked, highest rated, lowest rated, newest, oldest
+        setFilterOptions(filter);
+        bottomSheetRef.current?.dismiss();
     };
 
     const handleBottomSheet = (type: string) => {
@@ -136,11 +146,39 @@ const Main: React.FC = () => {
         }
     };
 
+    const applyFilters = (quotesToFilter: Quote[]) => {
+        let filteredQuotes = [...quotesToFilter];
+
+        if (filterOptions.liked) {
+            filteredQuotes = filteredQuotes.filter((quote) => quote.liked);
+        }
+
+        if (filterOptions.highestRated) {
+            filteredQuotes = filteredQuotes.sort((a, b) => b.rating - a.rating);
+        }
+
+        if (filterOptions.lowestRated) {
+            filteredQuotes = filteredQuotes.sort((a, b) => a.rating - b.rating);
+        }
+
+        if (filterOptions.newest) {
+            filteredQuotes = filteredQuotes.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+        }
+
+        if (filterOptions.oldest) {
+            filteredQuotes = filteredQuotes.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+        }
+
+        return filteredQuotes;
+    };
+
+    const renderedQuotes = applyFilters(sortedQuotes);
+
     return (
         <View style={styles.container}>
             <AnimatedSearchInput onFilterPress={() => handleBottomSheet('filter')} placeholder="Search..." scrollYValue={scrollYValue} onChangeText={onChangeText} />
             <FlatList
-                data={sortedQuotes}
+                data={renderedQuotes}
                 renderItem={renderItem}
                 keyExtractor={(_item, index) => index.toString()}
                 contentContainerStyle={styles.contentStyle}
@@ -150,7 +188,18 @@ const Main: React.FC = () => {
             />
             <FAB pencil style={styles.fab} onPress={() => handleBottomSheet('create')} />
             <BottomSheetModal ref={bottomSheetRef} snapPoints={snapPoints} backdropComponent={renderBackdrop} onDismiss={() => bottomSheetRef.current?.dismiss()}>
-                {sheetContent === 'create' ? <CreateQuoteForm onSave={handleSave} /> : <View style={{ width: '100%', height: 500, backgroundColor: 'cyan' }} />}
+                {sheetContent === 'create' ? (
+                    <CreateQuoteForm onSave={handleSave} />
+                ) : (
+                    <FilterForm
+                        liked={filterOptions.liked}
+                        highestRated={filterOptions.highestRated}
+                        lowestRated={filterOptions.lowestRated}
+                        newest={filterOptions.newest}
+                        oldest={filterOptions.oldest}
+                        setFilterOptions={filterBy}
+                    />
+                )}
             </BottomSheetModal>
         </View>
     );
